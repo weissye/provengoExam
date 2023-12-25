@@ -42,20 +42,20 @@ ctx.story('the Checkout','User.All',function (user) {
 //     }
 // })
 
-// story('Admin activities',function () {
-//     with (new SeleniumSession().start(URL+'admin')) {
-//         ctx.story('Change product price by admin','User.Admin',function (user) {
-//             adminLogin({user: user})
-//             changeProductPrice({product: {options: ['XS', 'Yellow'], product: 'Chloe Compete Tank', newPrice: 52}})
-//         })
-//         ctx.story('Add product by admin','User.Admin',function (user) {
-//             adminLogin({user: user})
-//             addProduct({product:
-//                     {category: "Men", subCategory: "Tops", subSubCategory: "Tees",
-//                         options: ['XS', 'Yellow'], name: 'Tee shirt', sku: 'test-men-top-tee-XS-Yellow', price: 27, qty: 50}})
-//         })
-//     }
-// })
+story('Admin activities',function () {
+    with (new SeleniumSession().start(URL+'admin')) {
+        ctx.story('Change product price by admin','User.Admin',function (user) {
+            adminLogin({user: user})
+            changeProductPrice({product: {options: ['XS', 'Yellow'], product: 'Chloe Compete Tank', newPrice: 52}})
+        })
+        ctx.story('Add product by admin','User.Admin',function (user) {
+            adminLogin({user: user})
+            addProduct({product:
+                    {category: "Men", subCategory: "Tops", subSubCategory: "Tees",
+                        options: ['XS', 'Yellow'], name: 'Tee shirt', sku: 'test-men-top-tee-XS-Yellow', price: 27, qty: 50}})
+        })
+    }
+})
 // ctx.story('Check price', 'User.All', function (user) {
 //     with (new SeleniumSession().start(URL)) {
 //         login({user: user})
