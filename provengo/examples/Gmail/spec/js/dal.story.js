@@ -51,7 +51,7 @@ ctx.registerQuery("Mail.BoxNonEmpty", entity => { return (entity.type.equals("Ma
 //     product.price = '"$'+e.product.newPrice+'.00"';
 // })
 ctx.registerEffect("SendMail", function (e) {
-    ctx.insertEntity(ctx.Entity(e.id, 'MailInBox', {from: e.to, subject: e.subject, body: e.body, sent: e.sent}))
+    ctx.insertEntity(ctx.Entity(e.id, 'MailInBox', {from: e.to, cc: e.cc, subject: e.subject, body: e.body, sent: e.sent}))
 })
 
 

@@ -6,16 +6,13 @@ from google.auth.transport.requests import Request
 
 
 SCOPES = ['https://mail.google.com/']
-ACCOUNT = "provengo6"
-TOKEN_FILE = TOKEN_FILE = 'token-' + ACCOUNT + '.json'
-CLIENT_SECRET_FILE = os.path.join(os.getcwd(), ACCOUNT + '-credentials.json')
+accounts = ["provengo6", "provengo7", "provengo9"]
 
-print(f"Client Secret file name:" + CLIENT_SECRET_FILE)
-print(f"Access Token file name:" + TOKEN_FILE)
-
-
-def authenticate():
+def authenticate(account):
     credentials = None
+    TOKEN_FILE = TOKEN_FILE = 'token-' + account + '.json'
+    CLIENT_SECRET_FILE = os.path.join(os.getcwd(), account + '-credentials.json')
+    print(f'=CLIENT_SECRET_FILE={CLIENT_SECRET_FILE}')
 
     # Check if token file exists
     if os.path.exists(TOKEN_FILE):
@@ -46,24 +43,26 @@ def authenticate():
 
 def main():
     # Authenticate or get saved credentials
-    credentials = authenticate()
+    for account in accounts:
+        print(f'Authenticating for {account}')
+        credentials = authenticate(account)
 
-    # Build the Gmail API service
-    service = build('gmail', 'v1', credentials=credentials)
+        # Build the Gmail API service
+        service = build('gmail', 'v1', credentials=credentials)
 
-    # List all messages in the Inbox
-    results = service.users().messages().list(userId='me', labelIds=['INBOX']).execute()
-    print(f'Found {len(results)} e-mails in inbox')
-    messages = results.get('messages', [])
-    
-    if not messages:
-        print('No messages found.')
-        return
+        # List all messages in the Inbox
+        results = service.users().messages().list(userId='me', labelIds=['INBOX']).execute()
+        print(f'Found {len(results)} e-mails in inbox')
+        messages = results.get('messages', [])
 
-    # Delete each message
-    for message in messages:
-        service.users().messages().delete(userId='me', id=message['id']).execute()
-        print(f"Deleted message with ID: {message['id']}")
+        if not messages:
+            print('No messages found.')
+            continue
+
+        # Delete each message
+        for message in messages:
+            service.users().messages().delete(userId='me', id=message['id']).execute()
+            print(f"Deleted message with ID: {message['id']}")
 
 if __name__ == '__main__':
     main()
