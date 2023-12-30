@@ -8,11 +8,18 @@
 //     return products[choose(Object.keys(products))]
 // }
 function getRandomMail() {
-    let products = ctx.runQuery("Mail2Send.All")
-    return MailToSend[choose(Object.keys(MailToSend))]
+    let mailToSend = ctx.runQuery("Mail2Send.All")
+    return MailToSend[choose(Object.keys(mailToSend))]
+}
+function getRandomSender() {
+    let users = ctx.runQuery("Sender.All")
+    return users[choose(Object.keys(users))]
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+
+ctx.registerQuery("Sender.All", entity => { return entity.type.equals("User") })
+
 
 ctx.registerQuery("Mail2Send.All", entity => { return entity.type.equals("MailToSend") })
 ctx.registerQuery("Mail2Send.NonSent", entity => { return (entity.type.equals("MailToSend") && entity.sent == ' ') })
@@ -62,6 +69,7 @@ ctx.registerEffect("EndOfAction", function (e) {
     } else if (e.eventName == "SendMail") {
         let mail = ctx.getEntityById(e.id);
         mail.sent = 'Sent'
+        bp.log.info("Mail sent: "+mail.id+" "+mail.sent)
     }
 
 })
@@ -70,14 +78,17 @@ ctx.registerEffect("EndOfAction", function (e) {
 ctx.populateContext([
     //Mail Accounts
     ctx.Entity('provengo6', 'User', {userName: 'provengo6@gmail.com', password: 'qazXSW22'}),
-    // ctx.Entity('provengo7', 'User', {userName: 'provengo7@gmail.com', password: 'qazXSW22'}),
-    // ctx.Entity('provengo9', 'User', {userName: 'provengo9@gmail.com', password: 'qazXSW22'}),
+    ctx.Entity('provengo7', 'User', {userName: 'provengo7@gmail.com', password: 'qazXSW22'}),
+    ctx.Entity('provengo9', 'User', {userName: 'provengo9@gmail.com', password: 'qazXSW22'}),
 
     // Mail to send
     ctx.Entity('Mail1', 'MailToSend', {to: 'provengo9@gmail.com', cc: 'provengo7@gmail.com', bcc: ' ', subject: 'Test #1', body: 'Test #1', sent: ' '}),
     // ctx.Entity('Mail2', 'MailToSend', {to: 'provengo7@gmail.com', cc: 'provengo6@gmail.com', bcc: ' ', subject: 'Test #2', body: 'Test #2', sent: ' '}),
-    // ctx.Entity('Mail3', 'MailToSend', {to: 'provengo6@gmail.com', subject: 'Test #3', body: 'Test #3', sent: ' '}),
-    
+    // ctx.Entity('Mail3', 'MailToSend', {to: 'provengo6@gmail.com', cc: ' ', bcc: ' ',subject: 'Test #3', body: 'Test #3', sent: ' '}),
+    // ctx.Entity('Mail4', 'MailToSend', {to: 'provengo9@gmail.com', cc: ' ', bcc: ' ',subject: 'Test #4', body: 'Test #4', sent: ' '}),
+    // ctx.Entity('Mail5', 'MailToSend', {to: 'provengo7@gmail.com', cc: 'provengo9@gmail.com', bcc: ' ',subject: 'Test #5', body: 'Test #5', sent: ' '}),
+    // ctx.Entity('Mail6', 'MailToSend', {to: 'provengo6@gmail.com', cc: ' ', bcc: ' ',subject: 'Test #6', body: 'Test #6', sent: ' '}),
+
     
 ])
 

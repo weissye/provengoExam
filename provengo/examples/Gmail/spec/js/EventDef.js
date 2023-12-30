@@ -39,8 +39,8 @@ if (EXCLUDE_LOW_LEVEL == "true") {
             writeText('//input[@class="agP aFw"]', event.to);
             click('//span[@class="aB gQ pE"]');
             waitForVisibility('//div[@class="aH9"]', 10000);
-            bp.log.info("cc: " + event.cc)
-            writeText('//div[@class="aH9"]', event.cc);
+            writeText('//tr[@class="bzf"][2]//input[@class="agP aFw"]', event.cc);
+            // writeText('//div[@class="aH9"]/input[@class="agP aFw"]', event.cc);
             writeText('//input[@class="aoT"]', event.subject);
             writeText('//div[@class="Ar Au"]/div[@class="Am aiL Al editable LW-avf tS-tW"]', event.body);
             click('//div[text()="Send"]');
@@ -51,43 +51,61 @@ if (EXCLUDE_LOW_LEVEL == "true") {
         }
     });
 
-    function sendEmail() {
-        driver.wait(until.elementLocated(By.xpath('//*[contains(text(), "COMPOSE")]')), 10000);
-        driver.findElement(By.xpath('//*[contains(text(), "COMPOSE")]')).click();
-        driver.wait(until.elementLocated(By.xpath('//*[contains(@name, "to")]')), 10000);
-        driver.findElement(By.xpath('//*[contains(@name, "to")]')).sendKeys('user2@gmail.com');
-        driver.findElement(By.xpath('//*[contains(@name, "cc")]')).sendKeys('user3@gmail.com');
-        driver.findElement(By.xpath('//*[contains(@name, "subjectbox")]')).sendKeys('test#1');
-        driver.findElement(By.xpath('//*[contains(text(), "Send")]')).click();
-        driver.quit();
-    }
 
-    function deleteEmail() {
-        var driver = new webdriver.Builder().forBrowser('chrome').build();
-        driver.get('https://mail.google.com');
-        driver.findElement(By.xpath('//*[contains(text(), "Sign in")]')).click();
-        driver.wait(until.elementLocated(By.xpath('//*[contains(@name, "identifier")]')), 10000);
-        driver.findElement(By.xpath('//*[contains(@name, "identifier")]')).sendKeys('user2@gmail.com');
-        driver.findElement(By.xpath('//*[contains(text(), "Next")]')).click();
-        driver.wait(until.elementLocated(By.xpath('//*[contains(@name, "password")]')), 10000);
-        driver.findElement(By.xpath('//*[contains(@name, "password")]')).sendKeys('password');
-        driver.findElement(By.xpath('//*[contains(text(), "Next")]')).click();
-        driver.wait(until.elementLocated(By.xpath('//*[contains(text(), "test#1")]')), 10000);
-        driver.findElement(By.xpath('//*[contains(text(), "test#1")]')).click();
-        driver.wait(until.elementLocated(By.xpath('//*[contains(text(), "Delete")]')), 10000);
-        driver.findElement(By.xpath('//*[contains(text(), "Delete")]')).click();
-        driver.quit();
-    }
+// Define the 'from' and 'subject' values
+    const fromValue = 'example@gmail.com';
+    const subjectValue = 'Test Subject';
+
+// Construct the XPath query for searching emails based on 'from' and 'subject'
+    const searchXPath = `//input[@aria-label="Search"]`;
+    const searchButtonXPath = `//button[@aria-label="Search Gmail"]`;
+    const firstEmailXPath = `//div[@role="main"]//tr[1]`;
+    const deleteButtonXPath = `//div[@aria-label="Delete"]`;
+    const confirmDeleteButtonXPath = `//button[text()="Delete"]`;
+
+// Function to perform the deletion
+//     function deleteEmail() {
+//         // Find and type into the search bar
+//         const searchInput = document.evaluate(searchXPath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+//         searchInput.value = `from:${fromValue}`;
+//
+//         // Find and click the search button
+//         const searchButton = document.evaluate(searchButtonXPath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+//         searchButton.click();
+//
+//         // Wait for the search results to load (adjust the timeout as needed)
+//         setTimeout(() => {
+//             // Find and click the first email
+//             const firstEmail = document.evaluate(firstEmailXPath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+//             firstEmail.click();
+//
+//             // Wait for the email details to load (adjust the timeout as needed)
+//             setTimeout(() => {
+//                 // Find and click the delete button
+//                 const deleteButton = document.evaluate(deleteButtonXPath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+//                 deleteButton.click();
+//
+//                 // Wait for the confirmation modal to load (adjust the timeout as needed)
+//                 setTimeout(() => {
+//                     // Find and click the confirm delete button
+//                     const confirmDeleteButton = document.evaluate(confirmDeleteButtonXPath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+//                     confirmDeleteButton.click();
+//                 }, 2000);
+//             }, 5000);
+//         }, 5000);
+//     }
+
 
     defineEvent(SeleniumSession, "DeleteMail", function (session, event) {
         with (session) {
-            click('//a[@href="https://mail.google.com/mail/u/0/#inbox"]');
+            click('//a[text()="Inbox"]');
+            // writeText('//input[@aria-label="Search mail"]', `from:${event.from} subject:${event.subject}` );
             // click('//table[@id=":22"]//tr[@class="zA zE"]//td[@class="yX xY "]//div[@class="yW"]//span[@class="bA4"]//span[@email="provengo6@gmail.com"]');
             // click('//table[@id=":22"]//tr[contains(@class, "zA")]//td[@class="yX xY "]//div[contains(@class, "yW"]//span[@class="bA4"]//span[@email="provengo6@gmail.com"]');
-            click('//span[contains(text(),"אני")]/ancestor::tr[contains(.,"Test #1")]//div[@role="checkbox"]');
+            click('//div[class="oZ-jc T-Jo J-J5-Ji "]');
 
-            click('//div[@class="T-I J-J5-Ji nX T-I-ax7 T-I-Js-Gs mA T-I-KL" and (@aria-label="מחיקה" or @aria-label="delete")]//div[@class="asa"]');
-            click('//a[@href="https://mail.google.com/mail/u/0/#inbox"]');
+            click('//div[@class="T-I J-J5-Ji nX T-I-ax7 T-I-Js-Gs mA T-I-KL" and (@aria-label="delete")]//div[@class="asa"]');
+            click('//a[text()="Inbox"]');
 
         }
     });
